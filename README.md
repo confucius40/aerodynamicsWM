@@ -1,3 +1,5 @@
+![plane blueprints](aerodynamics.jpg)
+
 # aerodynamicsWM
 
 an infinite canvas x11 window manager. you wanted floating windows that don't suck. here it is.
