@@ -13,7 +13,6 @@ categories = ["gui"]
 license = "GPL-3.0-only"
 
 [dependencies]
-x11-xcb = "0.1"
 xcb = "1.4"
 xcb-util = "1.4"
 xcb-xfixes = "0.1"
