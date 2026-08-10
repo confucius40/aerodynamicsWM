@@ -1,6 +1,6 @@
 [package]
 name = "aerodynamicsWM"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 authors = ["Confucius40 <yiff@paws.lol>"]
 description = "Infinite canvas X11 window manager with pan/zoom and Scheme configuration"
