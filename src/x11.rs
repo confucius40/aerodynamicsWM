@@ -2,7 +2,7 @@ use crate::canvas::Canvas;
 use crate::config::Config;
 use anyhow::Result;
 use log::debug;
-use xcb::{Connection, Event};
+use xcb::{Connection, Event, Xid};
 
 pub struct X11 {
     conn: Connection,
