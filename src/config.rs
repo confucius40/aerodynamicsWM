@@ -1,5 +1,5 @@
 use anyhow::Result;
-use lua::Lua;
+use mlua::Lua;
 use std::path::PathBuf;
 
 pub struct Config {
@@ -37,29 +37,30 @@ pub fn load() -> Result<Config> {
 
     let lua = Lua::new();
     let code = std::fs::read_to_string(&cfg_path)?;
-    lua.exec(&code)?;
+    lua.load(&code).exec()?;
 
+    let globals = lua.globals();
     let mut cfg = Config::default();
 
-    if let Ok(gravity) = lua.get::<f32>("gravity") {
+    if let Ok(gravity) = globals.get::<_, f32>("gravity") {
         cfg.gravity = gravity;
     }
-    if let Ok(friction) = lua.get::<f32>("friction") {
+    if let Ok(friction) = globals.get::<_, f32>("friction") {
         cfg.friction = friction;
     }
-    if let Ok(elasticity) = lua.get::<f32>("elasticity") {
+    if let Ok(elasticity) = globals.get::<_, f32>("elasticity") {
         cfg.elasticity = elasticity;
     }
-    if let Ok(enabled) = lua.get::<bool>("physics_enabled") {
+    if let Ok(enabled) = globals.get::<_, bool>("physics_enabled") {
         cfg.physics_enabled = enabled;
     }
-    if let Ok(width) = lua.get::<i32>("border_width") {
+    if let Ok(width) = globals.get::<_, i32>("border_width") {
         cfg.border_width = width as u8;
     }
-    if let Ok(color) = lua.get::<String>("focus_color") {
+    if let Ok(color) = globals.get::<_, String>("focus_color") {
         cfg.focus_color = color;
     }
-    if let Ok(key) = lua.get::<i32>("mod_key") {
+    if let Ok(key) = globals.get::<_, i32>("mod_key") {
         cfg.mod_key = key as u32;
     }
 

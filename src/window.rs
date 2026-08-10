@@ -12,7 +12,7 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn new(id: u32, x: f32, y: f32, cfg: &Config) -> Result<Self> {
+    pub fn new(id: u32, x: f32, y: f32, _cfg: &Config) -> Result<Self> {
         Ok(Self {
             id,
             x,

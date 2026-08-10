@@ -4,7 +4,6 @@ use crate::window::Window;
 use anyhow::Result;
 use log::debug;
 use std::collections::HashMap;
-use xcb::x;
 
 pub struct Canvas {
     windows: HashMap<u32, Window>,
@@ -62,7 +61,9 @@ impl Canvas {
     pub fn on_button_press(&mut self, button: u8, x: f32, y: f32) -> Result<()> {
         match button {
             1 => {
-                for (_id, win) in self.windows.iter().rev() {
+                let mut candidates: Vec<&Window> = self.windows.values().collect();
+                candidates.reverse();
+                for win in candidates {
                     if win.contains(x, y) {
                         self.dragging = Some(win.id());
                         self.drag_start_x = x;
@@ -83,7 +84,7 @@ impl Canvas {
         Ok(())
     }
 
-    pub fn update(&mut self, cfg: &Config) -> Result<()> {
+    pub fn update(&mut self, _cfg: &Config) -> Result<()> {
         if self.physics.enabled() {
             for (_id, win) in self.windows.iter_mut() {
                 self.physics.apply(win);

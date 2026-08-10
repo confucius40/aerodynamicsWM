@@ -17,7 +17,7 @@ impl Shader {
         Ok(())
     }
 
-    pub fn render(&self, width: u32, height: u32, time: f32) -> Result<Vec<u8>> {
+    pub fn render(&self, _width: u32, _height: u32, _time: f32) -> Result<Vec<u8>> {
         Ok(vec![])
     }
 }
