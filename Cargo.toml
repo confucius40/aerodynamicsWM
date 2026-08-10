@@ -1,0 +1,40 @@
+[package]
+name = "aerodynamicsWM"
+version = "0.1.0"
+edition = "2021"
+authors = ["Confucius40 <yiff@paws.lol>"]
+description = "Infinite canvas X11 window manager with pan/zoom and Scheme configuration"
+repository = "https://github.com/confucius40/aerodynamicsWM"
+homepage = "https://github.com/confucius40/aerodynamicsWM"
+documentation = "https://docs.rs/aerodynamicsWM"
+readme = "README.md"
+keywords = ["x11", "wm", "window-manager", "canvas", "floating"]
+categories = ["gui"]
+license = "GPL-3.0-only"
+
+[dependencies]
+x11-xcb = "0.1"
+xcb = "1.4"
+xcb-util = "1.4"
+xcb-xfixes = "0.1"
+xcb-image = "0.1"
+xft = "0.3"
+libc = "0.2"
+libguile-sys = "0.1"
+thiserror = "1.0"
+log = "0.4"
+env_logger = "0.11"
+anyhow = "1.0"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "canvas_pan"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
