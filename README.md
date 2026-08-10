@@ -2,7 +2,7 @@
 
 # aerodynamicsWM
 
-an infinite canvas x11 window manager. you wanted floating windows that don't suck. here it is.
+an "infinite canvas"-style WM for X11.
 
 ## what it does
 
@@ -14,13 +14,12 @@ an infinite canvas x11 window manager. you wanted floating windows that don't su
 
 ## why this exists
 
-existing wms either:
+mostly because existing WMs either
+- sucks
+- are too simple
+- do nothing
 
-* tile everything and pretend stacking windows don't exist
-* stack windows and pretend you don't need workspaces
-* add "features" until they're 50k lines of unmaintainable crud
-
-this doesn't solve that problem. it just sidesteps it. infinite canvas means you're not choosing between tiling and stacking. you're choosing between *here* and *there*.
+so we sidestep this problem completely, by making windows live in an unbounded space, this makes invisible, mental worspaces, and its just awesome.
 
 ## building
 
@@ -48,8 +47,6 @@ example:
 
 (keybind mod-key (key "q") (lambda () (exit)))
 ```
-
-no defaults. write what you need. delete what you don't.
 
 ### physics
 
@@ -81,7 +78,7 @@ wallpaper_shader = [[
 ]]
 ```
 
-iTime, iResolution passed automatically. sample textures if you want. or don't. solid color works too.
+iTime, iResolution passed automatically. sample textures if you want. solid color works too.
 
 ---
 
@@ -93,17 +90,6 @@ aerodynamicsWM
 
 replaces your current wm. if it breaks, you have bigger problems.
 
-## license
-
-GPLv3. copy it, modify it, run it on a toaster. don't sell it to people.
-
 ## why "aerodynamicsWM"
 
-short: `awm`. clean. sounds like something that actually moves.
-
-long: stacking windows in unbounded space is just fluid dynamics with rectangles. might as well name it accordingly.
-
----
-
-do one thing. do it well. your windows float now. stop complaining.
-
+Because it sounded cool, short-from `awm`
