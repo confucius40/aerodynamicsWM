@@ -1,4 +1,5 @@
 use anyhow::Result;
+use lua::Lua;
 use std::path::PathBuf;
 
 pub struct Config {
@@ -27,14 +28,40 @@ impl Default for Config {
 
 pub fn load() -> Result<Config> {
     let cfg_path = dirs::config_dir()
-        .map(|d| d.join("awm/config.scm"))
-        .unwrap_or_else(|| PathBuf::from("~/.config/awm/config.scm"));
+        .map(|d| d.join("awm/config.lua"))
+        .unwrap_or_else(|| PathBuf::from("~/.config/awm/config.lua"));
 
     if !cfg_path.exists() {
         return Ok(Config::default());
     }
 
+    let lua = Lua::new();
+    let code = std::fs::read_to_string(&cfg_path)?;
+    lua.exec(&code)?;
+
     let mut cfg = Config::default();
+
+    if let Ok(gravity) = lua.get::<f32>("gravity") {
+        cfg.gravity = gravity;
+    }
+    if let Ok(friction) = lua.get::<f32>("friction") {
+        cfg.friction = friction;
+    }
+    if let Ok(elasticity) = lua.get::<f32>("elasticity") {
+        cfg.elasticity = elasticity;
+    }
+    if let Ok(enabled) = lua.get::<bool>("physics_enabled") {
+        cfg.physics_enabled = enabled;
+    }
+    if let Ok(width) = lua.get::<i32>("border_width") {
+        cfg.border_width = width as u8;
+    }
+    if let Ok(color) = lua.get::<String>("focus_color") {
+        cfg.focus_color = color;
+    }
+    if let Ok(key) = lua.get::<i32>("mod_key") {
+        cfg.mod_key = key as u32;
+    }
 
     Ok(cfg)
 }
