@@ -6,17 +6,18 @@ module AWM.Input
   ) where
 
 import AWM.World
+import qualified Data.Map.Strict as Map
 import Graphics.X11
 
 button :: Display -> World -> Window -> Int -> IO World
-button dpy state root btn
+button _ state _ btn
   | btn == 2 = pure state { pan = True }
   | btn == 1 =
       pure state { drag = find state }
   | otherwise = pure state
   where
     find s =
-      case filter (hit (world (cam s) (mouse s)) . snd) (wins s) of
+      case filter (hit (world (cam s) (mouse s)) . snd) (Map.toList (wins s)) of
         ((w, _):_) -> Just w
         [] -> Nothing
 
