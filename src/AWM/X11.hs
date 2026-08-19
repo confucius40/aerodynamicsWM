@@ -79,12 +79,13 @@ loop dpy root state = do
       , ev_x_root = x
       , ev_y_root = y
       } -> do
-        let p = Vec (fromIntegral x) (fromIntegral y)
+        let b = fromIntegral btn
+            p = Vec (fromIntegral x) (fromIntegral y)
             next = motion state p
         state' <-
           if t == buttonPress
-            then button dpy next root btn
-            else pure (release next btn)
+            then button dpy next root b
+            else pure (release next b)
         loop dpy root state'
 
     MotionEvent
