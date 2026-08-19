@@ -1,0 +1,10 @@
+resolver: lts-24.15
+
+packages:
+  - .
+
+extra-deps: []
+
+flags: {}
+
+extra-package-dbs: []

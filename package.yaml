@@ -1,0 +1,45 @@
+name: aerodynamics-wm
+version: 0.1.0.0
+github: "confucius40/aerodynamicsWM"
+license: GPL-3.0-only
+author: "confucius40"
+copyright: "2026"
+extra-source-files:
+  - README.md
+
+dependencies:
+  - base >= 4.18 && < 5
+  - X11
+
+library:
+  source-dirs: src
+
+executables:
+  aerodynamics-wm:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+      - -Wall
+      - -Wcompat
+      - -Widentities
+      - -Wincomplete-uni-patterns
+      - -Wincomplete-record-updates
+      - -Wmissing-export-lists
+      - -Wmissing-import-lists
+      - -Wmissing-signatures
+      - -Wpartial-fields
+      - -Wredundant-constraints
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - aerodynamics-wm
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+      - -Wall
+    dependencies:
+      - aerodynamics-wm
