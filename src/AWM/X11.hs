@@ -5,6 +5,7 @@ module AWM.X11
 import Data.Bits ((.|.))
 import Graphics.X11
 import Graphics.X11.Xlib.Extras
+import Foreign.Marshal.Alloc (alloca)
 
 run :: IO ()
 run = do
@@ -16,6 +17,8 @@ run = do
 
 loop :: Display -> IO ()
 loop dpy = do
-  ev <- getEvent dpy
-  putStrLn (show ev)
+  ev <- allocaXEvent $ \ptr -> do
+    nextEvent dpy ptr
+    getEvent ptr
+  print ev
   loop dpy
