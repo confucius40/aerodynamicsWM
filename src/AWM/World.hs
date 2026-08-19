@@ -11,6 +11,10 @@ module AWM.World
   , screen
   , world
   , hit
+  , grab
+  , drag
+  , ungrab
+  , view
   ) where
 
 import Data.Map.Strict (Map)
@@ -35,11 +39,11 @@ data Cam = Cam
   } deriving (Eq, Show)
 
 data World = World
-  { wins :: !(Map Window Win)
-  , cam  :: !Cam
-  , mouse :: !Vec
-  , drag :: !(Maybe Window)
-  , pan :: !Bool
+  { wins    :: !(Map Window Win)
+  , cam     :: !Cam
+  , mouse   :: !Vec
+  , grabbed :: !(Maybe Window)
+  , panning :: !Bool
   } deriving (Show)
 
 zero :: Vec
@@ -51,8 +55,8 @@ empty =
     { wins = Map.empty
     , cam = Cam zero 1
     , mouse = zero
-    , drag = Nothing
-    , pan = False
+    , grabbed = Nothing
+    , panning = False
     }
 
 add :: Win -> World -> World
@@ -63,7 +67,7 @@ del :: Window -> World -> World
 del win state =
   state
     { wins = Map.delete win (wins state)
-    , drag = if drag state == Just win then Nothing else drag state
+    , grabbed = if grabbed state == Just win then Nothing else grabbed state
     }
 
 move :: Vec -> Vec -> Vec
@@ -90,3 +94,54 @@ hit p win =
     && vy p >= vy (pos win)
     && vx p <= vx (pos win) + vx (size win)
     && vy p <= vy (pos win) + vy (size win)
+
+grab :: Window -> Vec -> World -> World
+grab win p state =
+  state
+    { grabbed = Just win
+    , mouse = p
+    }
+
+drag :: Vec -> World -> World
+drag p state =
+  case grabbed state of
+    Nothing ->
+      state { mouse = p }
+
+    Just win ->
+      case Map.lookup win (wins state) of
+        Nothing ->
+          state
+            { mouse = p
+            , grabbed = Nothing
+            }
+
+        Just item ->
+          let
+            old = world (cam state) (mouse state)
+            now = world (cam state) p
+            delta = move now (Vec (-vx old) (-vy old))
+            item' = item { pos = move (pos item) delta }
+          in
+            state
+              { mouse = p
+              , wins = Map.insert win item' (wins state)
+              }
+
+ungrab :: World -> World
+ungrab state =
+  state { grabbed = Nothing }
+
+view :: Vec -> Vec -> World -> World
+view old now state =
+  let
+    a = world (cam state) old
+    b = world (cam state) now
+    delta = move a (Vec (-vx b) (-vy b))
+  in
+    state
+      { cam = (cam state)
+          { cpos = move (cpos (cam state)) delta
+          }
+      , mouse = now
+      }

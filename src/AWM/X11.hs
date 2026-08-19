@@ -7,6 +7,7 @@ import AWM.World
 import Data.Bits ((.|.))
 import Graphics.X11
 import Graphics.X11.Xlib.Extras
+import qualified Data.Map.Strict as Map
 
 run :: IO ()
 run = do
@@ -81,11 +82,11 @@ loop dpy root state = do
       } -> do
         let b = fromIntegral btn
             p = Vec (fromIntegral x) (fromIntegral y)
-            next = motion state p
-        state' <-
-          if t == buttonPress
-            then button dpy next root b
-            else pure (release next b)
+            next = state { mouse = p }
+            state' =
+              if t == buttonPress
+                then press next b
+                else release next b
         loop dpy root state'
 
     MotionEvent
@@ -93,10 +94,23 @@ loop dpy root state = do
       , ev_y = y
       } -> do
         let p = Vec (fromIntegral x) (fromIntegral y)
-        loop dpy root (motion state p)
+            next = motion state p
+        sync dpy False
+        draw dpy next
+        loop dpy root next
 
     DestroyWindowEvent { ev_window = win } ->
       loop dpy root (del win state)
 
     _ ->
       loop dpy root state
+
+draw :: Display -> World -> IO ()
+draw dpy state =
+  mapM_ put (Map.elems (wins state))
+  where
+    put win = do
+      let p = screen (cam state) (pos win)
+          x = round (vx p)
+          y = round (vy p)
+      moveWindow dpy (wid win) x y
