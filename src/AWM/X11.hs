@@ -88,8 +88,8 @@ loop dpy root state = do
         loop dpy root state'
 
     MotionEvent
-      { ev_x_root = x
-      , ev_y_root = y
+      { ev_x = x
+      , ev_y = y
       } -> do
         let p = Vec (fromIntegral x) (fromIntegral y)
         loop dpy root (motion state p)
