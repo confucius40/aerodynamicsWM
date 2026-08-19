@@ -1,12 +1,14 @@
-.. image:: /aerodynamics.jpg
+================
+  AerodynamicsWM
+================
 
-# AerodynamicsWM
+.. image:: /aerodynamics.jpg
+   :alt: AerodynamicsWM
 
 An experimental infinite-canvas window manager for X11.
 
-Windows live in an unbounded 2D space instead of being constrained to tiling layouts.
-
-# Features [soon]
+Features
+========
 
 * Infinite canvas
 * Floating windows
@@ -15,21 +17,16 @@ Windows live in an unbounded 2D space instead of being constrained to tiling lay
 * Lua configuration
 * Shader wallpapers
 
-# Build
+Build
+=====
 
 ::
 
-```
-stack build
-```
+    stack build
 
-# Run
+Run
+===
 
 ::
 
-```
-stack exec aerodynamics-wm
-```
-
-Running it replaces the current X11 window manager.
-
+    stack exec aerodynamics-wm
