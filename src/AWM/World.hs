@@ -10,6 +10,7 @@ module AWM.World
   , move
   , screen
   , world
+  , hit
   ) where
 
 import Data.Map.Strict (Map)
@@ -36,6 +37,9 @@ data Cam = Cam
 data World = World
   { wins :: !(Map Window Win)
   , cam  :: !Cam
+  , mouse :: !Vec
+  , drag :: !(Maybe Window)
+  , pan :: !Bool
   } deriving (Show)
 
 zero :: Vec
@@ -46,6 +50,9 @@ empty =
   World
     { wins = Map.empty
     , cam = Cam zero 1
+    , mouse = zero
+    , drag = Nothing
+    , pan = False
     }
 
 add :: Win -> World -> World
@@ -54,7 +61,10 @@ add win state =
 
 del :: Window -> World -> World
 del win state =
-  state { wins = Map.delete win (wins state) }
+  state
+    { wins = Map.delete win (wins state)
+    , drag = if drag state == Just win then Nothing else drag state
+    }
 
 move :: Vec -> Vec -> Vec
 move (Vec ax ay) (Vec bx by) =
@@ -73,3 +83,10 @@ world camera p =
     { vx = vx p / czoom camera + vx (cpos camera)
     , vy = vy p / czoom camera + vy (cpos camera)
     }
+
+hit :: Vec -> Win -> Bool
+hit p win =
+  vx p >= vx (pos win)
+    && vy p >= vy (pos win)
+    && vx p <= vx (pos win) + vx (size win)
+    && vy p <= vy (pos win) + vy (size win)

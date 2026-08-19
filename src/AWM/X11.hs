@@ -2,6 +2,7 @@ module AWM.X11
   ( run
   ) where
 
+import AWM.Input
 import AWM.World
 import Data.Bits ((.|.))
 import Graphics.X11
@@ -19,6 +20,9 @@ mask :: EventMask
 mask =
   substructureRedirectMask
   .|. substructureNotifyMask
+  .|. pointerMotionMask
+  .|. buttonPressMask
+  .|. buttonReleaseMask
 
 loop :: Display -> Window -> World -> IO ()
 loop dpy root state = do
@@ -68,6 +72,27 @@ loop dpy root state = do
         configureWindow dpy win vm changes
         sync dpy False
         loop dpy root state
+
+    ButtonEvent
+      { ev_event_type = t
+      , ev_button = btn
+      , ev_x_root = x
+      , ev_y_root = y
+      } -> do
+        let p = Vec (fromIntegral x) (fromIntegral y)
+            next = motion state p
+        state' <-
+          if t == buttonPress
+            then button dpy next root btn
+            else pure (release next btn)
+        loop dpy root state'
+
+    MotionEvent
+      { ev_x_root = x
+      , ev_y_root = y
+      } -> do
+        let p = Vec (fromIntegral x) (fromIntegral y)
+        loop dpy root (motion state p)
 
     DestroyWindowEvent { ev_window = win } ->
       loop dpy root (del win state)
