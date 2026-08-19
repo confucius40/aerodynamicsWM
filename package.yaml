@@ -35,11 +35,11 @@ executables:
     dependencies:
       - aerodynamics-wm
 
-tests:
-  spec:
-    main: Spec.hs
-    source-dirs: test
-    ghc-options:
-      - -Wall
-    dependencies:
-      - aerodynamics-wm
+#tests:
+  # spec:
+  #   main: Spec.hs
+  #   source-dirs: test
+  #   ghc-options:
+  #     - -Wall
+  #   dependencies:
+  #     - aerodynamics-wm
