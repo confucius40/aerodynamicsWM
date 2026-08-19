@@ -21,15 +21,30 @@ mask =
   .|. substructureNotifyMask
 
 loop :: Display -> Window -> World -> IO ()
-loop dpy root world = do
+loop dpy root state = do
   ev <- allocaXEvent $ \ptr -> do
     nextEvent dpy ptr
     getEvent ptr
   case ev of
     MapRequestEvent { ev_window = win } -> do
+      attr <- getWindowAttributes dpy win
+      let p = Vec
+            { vx = fromIntegral (wa_x attr)
+            , vy = fromIntegral (wa_y attr)
+            }
+          s = Vec
+            { vx = fromIntegral (wa_width attr)
+            , vy = fromIntegral (wa_height attr)
+            }
+          item = Win
+            { wid = win
+            , pos = p
+            , vel = zero
+            , size = s
+            }
       mapWindow dpy win
       sync dpy False
-      loop dpy root (add (Win win) world)
+      loop dpy root (add item state)
 
     ConfigureRequestEvent
       { ev_window = win
@@ -52,10 +67,10 @@ loop dpy root world = do
                 }
         configureWindow dpy win vm changes
         sync dpy False
-        loop dpy root world
+        loop dpy root state
 
     DestroyWindowEvent { ev_window = win } ->
-      loop dpy root (del win world)
+      loop dpy root (del win state)
 
     _ ->
-      loop dpy root world
+      loop dpy root state
